@@ -1,0 +1,9 @@
+
+Add your twitter creds to application.properties
+
+
+```
+mvn package
+
+riff create java --input command --output tweets --artifact twitter-source-0.0.1-SNAPSHOT.jar --handler io.projectriff.sample.twitter.TwitterSourceFunction
+```
