@@ -2,7 +2,6 @@ package io.projectriff.sample.twitter;
 
 import org.reactivestreams.Publisher;
 import org.springframework.boot.Banner;
-import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.Lifecycle;
@@ -20,16 +19,16 @@ public class TwitterSourceFunction {
 		new SpringApplicationBuilder()
 			.sources(TwitterSourceFunction.class)
 			.bannerMode(Banner.Mode.OFF)
-			.web(WebApplicationType.NONE)
+			.web(false)
 			.run(args);
 	}
 
 
-	private final Publisher<Message<?>> tweets;
+	private final Publisher<Message<String>> tweets;
 
 	private final Lifecycle lifecycle;
 
-	public TwitterSourceFunction(Publisher<Message<?>> tweets, Lifecycle lifecycle) {
+	public TwitterSourceFunction(Publisher<Message<String>> tweets, Lifecycle lifecycle) {
 		this.tweets = tweets;
 		this.lifecycle = lifecycle;
 	}
