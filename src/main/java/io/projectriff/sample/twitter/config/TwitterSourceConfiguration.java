@@ -1,6 +1,5 @@
 package io.projectriff.sample.twitter.config;
 
-import io.projectriff.sample.twitter.TwitterSourceApplication;
 import io.projectriff.sample.twitter.TwitterSourceFunction;
 import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;

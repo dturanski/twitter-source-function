@@ -1,5 +1,6 @@
 package io.projectriff.sample.twitter;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ public class TwitterSourceFunctionTest {
 	private TwitterSourceFunction function;
 
 	@Test
-	//@Ignore
+	@Ignore
 	//Can run with twitter credentials
 
 	public void test() throws InterruptedException {
