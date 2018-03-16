@@ -1,16 +1,15 @@
 package io.projectriff.sample.twitter.config;
 
+import io.projectriff.sample.twitter.TwitterSourceApplication;
 import io.projectriff.sample.twitter.TwitterSourceFunction;
 import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.Lifecycle;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.integration.channel.DirectChannel;
-import org.springframework.integration.channel.QueueChannel;
 import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.messaging.Message;
 import org.springframework.social.twitter.api.impl.TwitterTemplate;
@@ -44,8 +43,8 @@ public class TwitterSourceConfiguration {
 	}
 
 	@Bean
-	TwitterSourceFunction twitterSourceFunction(Lifecycle lifecycle) {
-		return new TwitterSourceFunction(tweets(), lifecycle);
+	TwitterSourceFunction twitterSourceFunction() {
+		return new TwitterSourceFunction();
 	}
 
 	@Bean
@@ -57,9 +56,7 @@ public class TwitterSourceConfiguration {
 
 	@Bean
 	Publisher<Message<String>> tweets() {
-		return IntegrationFlows.from(output())
-			.filter(h->true)
-			.toReactivePublisher();
+		return IntegrationFlows.from(output()).filter(h -> true).toReactivePublisher();
 	}
 
 }

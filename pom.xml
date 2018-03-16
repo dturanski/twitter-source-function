@@ -31,11 +31,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-reactor-netty</artifactId>
-		</dependency>
-
-		<dependency>
 			<groupId>org.springframework.integration</groupId>
 			<artifactId>spring-integration-twitter</artifactId>
 		</dependency>
@@ -61,7 +56,6 @@
 			<groupId>io.projectreactor</groupId>
 			<artifactId>reactor-core</artifactId>
 			<version>3.1.1.RELEASE</version>
-			<scope>provided</scope>
 		</dependency>
 
 	</dependencies>
