@@ -1,9 +1,58 @@
+== Twitter Streams Source Application
 
-Add your twitter creds to application.properties
+This creates twitter stream queries and posts tweets to a riff topic via the riff http-gateway
 
+* `POST /streams` creates a new stream , with no request body will create a default sample stream.
+
+For filtered queries
+
+* `POST /streams {"language":"en", "streamType":"FILTER", "track":<comma-delimited-key-words>,
+"follow":<comma-delimited-usernames>}`
+
+* GET /streams - get query properties for all running streams
+* GET /stream/{id} - get query properties for the stream
+
+* DELETE /streams - destroy all streams
+* DELETE /stream/{id} - destroy a stream
+
+[NOTE]
+To run this app you need to provid valid https://developer.twitter.com/en/docs/basics/authentication/guides/access-tokens[twitter credentials]
+
+=== Running Standalone
+
+You can run this app locally. You will need a running riff FaaS platform, and the riff http-gateway host and port.
+The easiest way to get this is ` riff publish -i foo -d 0`  using a non-existent input topic.  You'll see a message
+Posting to http://127.0.0.1:30365/messages/foo
 
 ```
-mvn package
+$ ./mvnw clean package
 
-riff create java --input command --output tweets --artifact twitter-source-0.0.1-SNAPSHOT.jar --handler io.projectriff.sample.twitter.TwitterSourceFunction
+$ java -jar target/twitter-source-0.0.1-SNAPSHOT.jar \
+--twitter.credentials.consumerKey= \
+--twitter.credentials.consumerKeySecret= \
+--twitter.credentials.accessToken= \
+--twitter.credentials.consumerKeySecret =
+--riff.gateway.host=<riff-external-ip>
+--riff.gateway.port=<riff-external-port>
+--riff.gateway.topic=tweets
+
+```
+or you can provide these values in `application.properties` before building.
+
+
+
+Running in (local) Kubernetes with NodePort
+
+```
+$ ./mvnw clean package dockerfile:build
+$ kubectl run twitter-source --image image_name --port 8080 \
+CONSUMER_KEY= \
+CONSUMER_SECRET= \
+ACCESS_TOKEN= \
+ACCESS_TOKEN_SECRET=
+
+$kubectl expose deployment twitter-source --name twitter-source --type NodePort
+$IP_PORT=$(kubectl get service twitter-source --output='jsonpath={.spec.ports[0].nodePort}')
+$curl -X POST http://localhost:$IP_PORT/start
+$kubectl delete svc,deploy twitter-source
 ```

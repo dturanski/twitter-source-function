@@ -1,48 +1,32 @@
 package io.projectriff.sample.twitter.config;
 
-import io.projectriff.sample.twitter.TwitterSourceFunction;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import io.projectriff.sample.twitter.TwitterService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.Lifecycle;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.integration.channel.FluxMessageChannel;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.social.twitter.api.impl.TwitterTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 /**
  * @author David Turanski
  **/
 @Configuration
-@EnableConfigurationProperties({ TwitterCredentials.class, TwitterStreamProperties.class })
+@EnableConfigurationProperties({ TwitterCredentials.class, RiffGatewayProperties.class })
 public class TwitterSourceConfiguration {
 
-	@Autowired
-	private TwitterTemplate twitterTemplate;
-
-	@Autowired
-	private TwitterStreamProperties twitterStreamProperties;
-
 	@Bean
-	public FluxMessageChannel output() {
-		return new FluxMessageChannel();
+	public WebClient webClient(RiffGatewayProperties properties) {
+		return WebClient.builder().baseUrl(properties.url())
+			.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE)
+			.build();
 	}
 
 	@Bean
-	@Primary
-	public TwitterStreamMessageProducer twitterStream() {
-		TwitterStreamMessageProducer messageProducer = new TwitterStreamMessageProducer(twitterTemplate,
-			twitterStreamProperties);
-		messageProducer.setAutoStartup(false);
-		messageProducer.setOutputChannel(output());
-		return messageProducer;
-	}
-
-	@Bean
-	TwitterSourceFunction twitterSourceFunction(Lifecycle lifecycle) {
-		return new TwitterSourceFunction(output(), lifecycle);
+	public TwitterService twitterService(TwitterTemplate twitterTemplate, WebClient webClient) {
+		return new TwitterService(twitterTemplate, webClient);
 	}
 
 	@Bean

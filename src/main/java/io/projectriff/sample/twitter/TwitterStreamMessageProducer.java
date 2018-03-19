@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-package io.projectriff.sample.twitter.config;
+package io.projectriff.sample.twitter;
 
+import io.projectriff.sample.twitter.config.TwitterStreamProperties;
+import io.projectriff.sample.twitter.config.TwitterStreamType;
 import org.springframework.social.support.URIBuilder;
 import org.springframework.social.twitter.api.impl.TwitterTemplate;
 import org.springframework.util.StringUtils;
@@ -29,13 +31,14 @@ import java.net.URI;
  * @author Gary Russell
  * @author Nicolas Byl
  */
-class TwitterStreamMessageProducer extends AbstractTwitterInboundChannelAdapter {
+public class TwitterStreamMessageProducer extends AbstractTwitterInboundChannelAdapter {
 
 	private static final String API_URL_BASE = "https://stream.twitter.com/1.1/statuses/";
 
 	private final TwitterStreamProperties twitterStreamProperties;
 
-	TwitterStreamMessageProducer(TwitterTemplate twitterTemplate, TwitterStreamProperties twitterStreamProperties) {
+	public TwitterStreamMessageProducer(TwitterTemplate twitterTemplate, TwitterStreamProperties
+		twitterStreamProperties) {
 		super(twitterTemplate);
 		this.twitterStreamProperties = twitterStreamProperties;
 	}
@@ -66,6 +69,10 @@ class TwitterStreamMessageProducer extends AbstractTwitterInboundChannelAdapter 
 		URI uri = b.build();
 		logger.info("Using twitter stream url: " + uri);
 		return uri;
+	}
+
+	public TwitterStreamProperties getProperties() {
+		return twitterStreamProperties;
 	}
 
 	@Override

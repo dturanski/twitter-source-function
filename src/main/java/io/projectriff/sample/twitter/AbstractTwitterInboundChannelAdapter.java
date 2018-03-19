@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.projectriff.sample.twitter.config;
+package io.projectriff.sample.twitter;
 
 import org.springframework.beans.DirectFieldAccessor;
 import org.springframework.http.HttpMethod;
