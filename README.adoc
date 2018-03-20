@@ -32,27 +32,39 @@ $ java -jar target/twitter-source-0.0.1-SNAPSHOT.jar \
 --twitter.credentials.consumerKeySecret= \
 --twitter.credentials.accessToken= \
 --twitter.credentials.consumerKeySecret =
---riff.gateway.host=<riff-external-ip>
+--riff.gateway.host=<host>
 --riff.gateway.port=<riff-external-port>
---riff.gateway.topic=tweets
+--riff.gateway.topic=<topic>
+```
+
+Where the default host is `localhost`, default topic is `tweets`.
+
+Alternatively you can set these values in `application.properties` before building.
+
+When the app starts, it is waiting to start one or more twitter streams, each of which will be fed to the configured
+topic. For example
 
 ```
-or you can provide these values in `application.properties` before building.
+$  $ curl -i -H'Content-type:application/json' http://localhost:8080/streams -d'{"language":"en"}'
+  HTTP/1.1 201 Created
+  transfer-encoding: chunked
+  Content-Type: application/json;charset=UTF-8
 
-
-
-Running in (local) Kubernetes with NodePort
+  1
+```
+To terminate this stream:
 
 ```
-$ ./mvnw clean package dockerfile:build
-$ kubectl run twitter-source --image image_name --port 8080 \
-CONSUMER_KEY= \
-CONSUMER_SECRET= \
-ACCESS_TOKEN= \
-ACCESS_TOKEN_SECRET=
+$ curl http://localhost:8080/stream/1 -X DELETE
+```
+or to terminate all streams:
 
-$kubectl expose deployment twitter-source --name twitter-source --type NodePort
-$IP_PORT=$(kubectl get service twitter-source --output='jsonpath={.spec.ports[0].nodePort}')
-$curl -X POST http://localhost:$IP_PORT/start
-$kubectl delete svc,deploy twitter-source
+```
+$ curl http://localhost:8080/streams -X DELETE
+```
+
+To start a filtered stream:
+
+```
+$curl -i -H'Content-type:application/json' http://localhost:8080/streams -d'{"language":"en","streamType":"FILTER","track":"@realDonaldTrump,#POTUS,'''Donald Trump'''}'
 ```
