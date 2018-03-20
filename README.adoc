@@ -32,6 +32,7 @@ $ java -jar target/twitter-source-0.0.1-SNAPSHOT.jar \
 --twitter.credentials.consumerKeySecret= \
 --twitter.credentials.accessToken= \
 --twitter.credentials.consumerKeySecret =
+
 --riff.gateway.host=<host>
 --riff.gateway.port=<riff-external-port>
 --riff.gateway.topic=<topic>
@@ -67,4 +68,9 @@ To start a filtered stream:
 
 ```
 $curl -i -H'Content-type:application/json' http://localhost:8080/streams -d'{"language":"en","streamType":"FILTER","track":"@realDonaldTrump,#POTUS,'''Donald Trump'''}'
+--riff.gateway.host=<riff-external-ip>
+--riff.gateway.port=<riff-external-port>
+--riff.gateway.topic=tweets
+
 ```
+or you can provide these values in `application.properties` before building.
