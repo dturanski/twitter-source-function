@@ -25,11 +25,11 @@ public class TwitterSourceFunctionTest {
 
 	public void test() throws InterruptedException {
 
-		Flux.from(function.apply(Mono.just("start"))).subscribe(System.out::println);
+		Flux.from(function.apply(Flux.just("start"))).subscribe(System.out::println);
 
 		Thread.sleep(3000);
 
-		Flux.from(function.apply(Mono.just("stop"))).subscribe();
+		Flux.from(function.apply(Flux.just("stop"))).subscribe();
 	}
 
 }
