@@ -1,9 +1,96 @@
+== Twitter Event Source function
 
-Add your twitter creds to application.properties
+=== What is this?
 
+A java function, packaged as a Spring Boot application to provide a twitter stream.
+
+[NOTE]
+To look at an alternate implementation that uses `java.util.function.Supplier` , checkout the `supplier` branch.
+
+
+
+[NOTE]
+Running this sample requires valid https://developer.twitter.com/en/docs/basics/authentication/guides/access-tokens[credentials] to use the twitter API.
+
+* Edit application.properties to provide your credentials, and modify the query parameters.
+
+* Build the jar
 
 ```
-mvn package
+$ mvn package
+```
 
-riff create java --input command --output tweets --artifact twitter-source-0.0.1-SNAPSHOT.jar --handler io.projectriff.sample.twitter.TwitterSourceFunction&main=io.projectriff.sample.twitter.TwitterSourceApplication
+=== Running Standalone
+
+```
+$ java -jar target/target/twitter-source-0.0.1-SNAPSHOT.jar
+```
+
+In another terminal:
+
+```
+$ curl http://localhost:8080 -d start -H'Content-type:text/plain' -H'Accept:text/event-stream'
+```
+
+You should see a lot of tweets until you Ctrl-C the Boot application or
+
+```
+curl http://localhost:8080 -d stop -H'Content-type:text/plain'
+```
+
+=== Running in riff
+
+[NOTE]
+At the time of this writing, the riff function controller does not detect function activity by its output. To work
+around this, you need to manually set a long idle timeout.
+
+```
+$ riff init java --output tweets --artifact target/twitter-source-0.0.1-SNAPSHOT.jar \
+--handler "io.projectriff.sample.twitter.TwitterSourceFunction&main=io.projectriff.sample.twitter.TwitterSourceApplication"
+```
+
+* Edit `twitter-source-function.yaml` to set the idle timeout
+
+```
+apiVersion: projectriff.io/v1
+kind: Function
+metadata:
+  name: twitter-source
+spec:
+  protocol: grpc
+  input: command
+  output: tweets
+  idleTimeoutMs : 3600000
+  container:
+    image: ...
+```
+
+* Build and apply the function
+```
+$ riff update
+```
+
+* Start the twitter stream
+
+```
+$ riff publish -i twitter-source -d start
+```
+
+* Monitor the output topic. Download and run the riff `topics` script (or run it from  `riff` repo if you have it
+cloned.
+
+```
+$ curl https://raw.githubusercontent.com/projectriff/riff/master/topics | bash -s tail -n tweets
+```
+
+* Stop the twitter stream
+
+```
+$ riff publish -i twitter-source -d start
+```
+
+* Clean up
+
+```
+$riff delete --all -n twitter-source
 ```

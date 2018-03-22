@@ -1,17 +1,15 @@
 package io.projectriff.sample.twitter;
 
-import java.util.function.Function;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.reactivestreams.Publisher;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.Lifecycle;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
-
 import reactor.core.publisher.Flux;
+
+import java.util.function.Function;
 
 /**
  * @author David Turanski
@@ -39,7 +37,7 @@ public class TwitterSourceFunction implements Function<Flux<String>, Flux<String
 		case "start":
 			logger.info("Starting stream");
 			lifecycle.start();
-			return Flux.from(tweets).map(Message::getPayload).log();
+			return Flux.from(tweets).map(Message::getPayload);
 
 		case "stop":
 			logger.info("Stopping stream");
