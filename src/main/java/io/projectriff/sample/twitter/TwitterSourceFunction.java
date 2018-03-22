@@ -1,16 +1,17 @@
 package io.projectriff.sample.twitter;
 
+import java.util.function.Function;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.reactivestreams.Publisher;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.Lifecycle;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
-import java.util.function.Function;
+import reactor.core.publisher.Flux;
 
 /**
  * @author David Turanski
@@ -27,8 +28,10 @@ public class TwitterSourceFunction implements Function<Flux<String>, Flux<String
 
 	@Override
 	public Flux<String> apply(Flux<String> input) {
+		return input.flatMap(this::process);
+	}
 
-		String command = Mono.from(input).block();
+	private Flux<String> process(String command) {
 
 		logger.info("Function received command " + command);
 
@@ -39,8 +42,9 @@ public class TwitterSourceFunction implements Function<Flux<String>, Flux<String
 			return Flux.from(tweets).map(Message::getPayload).log();
 
 		case "stop":
+			logger.info("Stopping stream");
 			lifecycle.stop();
-			return Flux.just("");
+			return Flux.empty();
 		default:
 
 		}

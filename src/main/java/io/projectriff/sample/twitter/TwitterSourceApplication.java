@@ -11,9 +11,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 public class TwitterSourceApplication {
 
 	public static void main(String... args) {
-		new SpringApplicationBuilder().sources(TwitterSourceFunction.class)
-			.bannerMode(Banner.Mode.OFF)
-			.web(false).
-			run(args);
+		new SpringApplicationBuilder().sources(TwitterSourceApplication.class)
+				.bannerMode(Banner.Mode.OFF).run(args);
 	}
 }
