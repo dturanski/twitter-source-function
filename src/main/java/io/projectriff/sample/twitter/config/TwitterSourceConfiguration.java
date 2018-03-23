@@ -42,11 +42,6 @@ public class TwitterSourceConfiguration {
 	}
 
 	@Bean
-	TwitterSourceFunction twitterSourceFunction() {
-		return new TwitterSourceFunction();
-	}
-
-	@Bean
 	@ConditionalOnMissingBean
 	public TwitterTemplate twitterTemplate(TwitterCredentials credentials) {
 		return new TwitterTemplate(credentials.getConsumerKey(), credentials.getConsumerSecret(),
