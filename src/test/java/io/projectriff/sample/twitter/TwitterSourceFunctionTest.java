@@ -20,7 +20,6 @@ public class TwitterSourceFunctionTest {
 	private TwitterSourceFunction function;
 
 	@Test
-	@Ignore
 	//Can run with twitter credentials
 
 	public void test() throws InterruptedException {
